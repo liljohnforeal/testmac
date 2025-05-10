@@ -27,16 +27,22 @@
 				100% { clip-path: inset(0 0 90% 0); }
 			}
 
-			#glitch-text {
-				position: relative;
-				display: inline-block;
-				color: #fff;
-				font-family: 'Courier New', monospace;
-				font-size: 2em;
-				white-space: nowrap;
-				overflow: hidden;
-				border-right: 2px solid rgba(255,255,255,0.75);
-			}
+			@keyframes blink {
+                                0%, 100%   { border-right-color: transparent; }
+                                50%        { border-right-color: rgba(255,255,255,0.75); }
+                        }
+
+                        #glitch-text {
+                                position: relative;
+                                display: inline-block;
+                                color: #fff;
+                                font-family: 'Courier New', monospace;
+                                font-size: 2em;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                border-right: 2px solid rgba(255,255,255,0.75);
+                                animation: blink 0.8s step-start infinite;
+                        } 
 			#glitch-text::after {
 				content: attr(data-text);
 				position: absolute;
