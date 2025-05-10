@@ -399,32 +399,67 @@
 
 		<!-- Glitchy typing effect script -->
 		<script>
-  const text = "Yooooooo";
-  const el   = document.getElementById("glitch-text");
-  let   idx  = 0;
-  let   dir  =  1; // 1 = forward, -1 = backward
+  const text   = "Yooooooo";
+  const el     = document.getElementById("glitch-text");
+  let   idx    = 0;
+  let   phase  = 0;
+  let   timer;
 
-  function typeLoop() {
-    // render current substring
-    el.innerText = text.substring(0, idx);
-    el.setAttribute("data-text", text.substring(0, idx));
+  function nextAction() {
+    clearTimeout(timer);
 
-    // advance or reverse
-    idx += dir;
+    switch (phase) {
+      case 0: // type to full
+        if (idx < text.length) {
+          idx++;
+          render();
+          timer = setTimeout(nextAction, 80);
+        } else {
+          phase = 1;
+          timer = setTimeout(nextAction, 500); // hold full
+        }
+        break;
 
-    // if we hit either end, flip direction
-    if (idx === text.length + 1) {
-      dir = -1;
-      idx = text.length - 1;
-    } else if (idx === -1) {
-      dir = 1;
-      idx = 1;
+      case 1: // erase all but one
+        if (idx > 1) {
+          idx--;
+          render();
+          timer = setTimeout(nextAction, 50);
+        } else {
+          phase = 2;
+          timer = setTimeout(nextAction, 300);
+        }
+        break;
+
+      case 2: // type back to a random mid‑point
+        const target = 1 + Math.floor(Math.random() * (text.length - 1));
+        if (idx < target) {
+          idx++;
+          render();
+          timer = setTimeout(nextAction, 60);
+        } else {
+          phase = 3;
+          timer = setTimeout(nextAction, 400);
+        }
+        break;
+
+      case 3: // jump to full instantly
+        idx = text.length;
+        render();
+        phase = 1;   // loop erase again
+        timer = setTimeout(nextAction, 500);
+        break;
     }
-
-    setTimeout(typeLoop, 120);
   }
 
-  typeLoop();
+  function render() {
+    const substr = text.substring(0, idx);
+    el.innerText = substr;
+    el.setAttribute("data-text", substr);
+  }
+
+  // kick it off
+  nextAction();
 </script>
 
 
