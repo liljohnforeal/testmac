@@ -409,18 +409,18 @@
     clearTimeout(timer);
 
     switch (phase) {
-      case 0: // type to full
+      case 0: // 0 → full
         if (idx < text.length) {
           idx++;
           render();
           timer = setTimeout(nextAction, 80);
         } else {
           phase = 1;
-          timer = setTimeout(nextAction, 500); // hold full
+          timer = setTimeout(nextAction, 500);
         }
         break;
 
-      case 1: // erase all but one
+      case 1: // full → 1 char
         if (idx > 1) {
           idx--;
           render();
@@ -431,7 +431,7 @@
         }
         break;
 
-      case 2: // type back to a random mid‑point
+      case 2: // 1 char → random midpoint
         const target = 1 + Math.floor(Math.random() * (text.length - 1));
         if (idx < target) {
           idx++;
@@ -443,11 +443,15 @@
         }
         break;
 
-      case 3: // jump to full instantly
-        idx = text.length;
-        render();
-        phase = 1;   // loop erase again
-        timer = setTimeout(nextAction, 500);
+      case 3: // midpoint → full (gradual)
+        if (idx < text.length) {
+          idx++;
+          render();
+          timer = setTimeout(nextAction, 80);
+        } else {
+          phase = 1;              // loop back to erasing
+          timer = setTimeout(nextAction, 500);
+        }
         break;
     }
   }
@@ -458,9 +462,9 @@
     el.setAttribute("data-text", substr);
   }
 
-  // kick it off
   nextAction();
 </script>
+
 
 
 	</body>
