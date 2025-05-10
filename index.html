@@ -399,19 +399,34 @@
 
 		<!-- Glitchy typing effect script -->
 		<script>
-			const text = "Yooooooo";
-			const el = document.getElementById("glitch-text");
-			let index = 0;
-			function typeChar() {
-				if (index <= text.length) {
-					el.innerText = text.substring(0, index);
-					el.setAttribute("data-text", text.substring(0, index));
-					index++;
-					setTimeout(typeChar, 120);
-				}
-			}
-			typeChar();
-		</script>
+  const text = "Yooooooo";
+  const el   = document.getElementById("glitch-text");
+  let   idx  = 0;
+  let   dir  =  1; // 1 = forward, -1 = backward
+
+  function typeLoop() {
+    // render current substring
+    el.innerText = text.substring(0, idx);
+    el.setAttribute("data-text", text.substring(0, idx));
+
+    // advance or reverse
+    idx += dir;
+
+    // if we hit either end, flip direction
+    if (idx === text.length + 1) {
+      dir = -1;
+      idx = text.length - 1;
+    } else if (idx === -1) {
+      dir = 1;
+      idx = 1;
+    }
+
+    setTimeout(typeLoop, 120);
+  }
+
+  typeLoop();
+</script>
+
 
 	</body>
 </html>
